@@ -1,0 +1,63 @@
+
+$if(title)$
+<title>$title$</title>
+$else$
+<title>MDView</title>
+$endif$
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css/github-markdown.min.css">
+<style>
+  body {
+    padding: 2rem;
+    max-width: 900px;
+    margin: auto;
+    background: #0b1020;
+    color: #cbd5e1;
+  }
+  .markdown-body {
+    filter: invert(1) hue-rotate(180deg);
+  }
+  img {
+    max-width: 100%;
+    height: auto;
+    cursor: zoom-in;
+    transition: transform 0.2s ease;
+  }
+  img.zoomed {
+    transform: scale(2);
+    cursor: zoom-out;
+  }
+  pre { overflow: auto; }
+</style>
+<div class="markdown-body">
+$body$
+</div>
+<script>
+(function() {
+  const ws = new WebSocket("ws://localhost:7071");
+  let isScrollingFromEditor = false;
+
+  ws.onmessage = (event) => {
+    const msg = JSON.parse(event.data);
+    if (msg.type === "scrollTo") {
+      isScrollingFromEditor = true;
+      window.scrollTo({ top: msg.position });
+      setTimeout(() => { isScrollingFromEditor = false; }, 50);
+    } else if (msg.type === "toggleTheme") {
+      document.body.classList.toggle("mdview-dark");
+    }
+  };
+
+  window.addEventListener("scroll", () => {
+    if (!isScrollingFromEditor) {
+      ws.send(JSON.stringify({ type: "scroll", position: window.scrollY }));
+    }
+  });
+
+  document.querySelectorAll("img").forEach(img => {
+    img.addEventListener("click", () => {
+      img.classList.toggle("zoomed");
+    });
+  });
+})();
+</script>
