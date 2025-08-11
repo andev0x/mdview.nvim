@@ -38,6 +38,11 @@ A simple Neovim plugin for previewing Markdown files in a floating window or you
 - Dark mode support (toggled with the `t` key).
 - Yank the rendered HTML to the clipboard.
 
+## Demo
+<div align="center">
+    <img src="https://raw.githubusercontent.com/andev0x/description-image-archive/refs/heads/main/mdview.nvim/0811.gif" width="100%"/>"
+</div>
+
 ## Dependencies
 
 - `node`
