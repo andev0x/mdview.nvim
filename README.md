@@ -1,4 +1,9 @@
-# mdview.nvim
+
+<div align="center">
+    <h1> mdview.nvim </h1>
+</div>
+
+----
 
 <p align="center">
   <a href="https://github.com/andev0x/mdview.nvim/actions/workflows/lint.yml">
