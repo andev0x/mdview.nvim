@@ -56,6 +56,18 @@ use {
 }
 ```
 
+Using `lazy.nvim`:
+
+```lua
+{
+  'andev0x/mdview.nvim',
+  build = 'npm install',
+  config = function()
+    require('mdview').setup()
+  end,
+}
+```
+
 ## Usage
 
 - `:MDView` - Start the preview for the current Markdown file.
