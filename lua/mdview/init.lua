@@ -2,8 +2,7 @@ local M = {}
 local svc = require("mdview.server")
 local view = require("mdview.view")
 
-function M.setup(opts)
-	opts = opts or {}
+function M.setup()
 
 	vim.api.nvim_create_user_command("MDView", function()
 		local file = vim.fn.expand("%:p")
