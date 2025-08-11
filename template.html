@@ -12,6 +12,17 @@ $endif$
     margin: auto;
     background: white;
     color: black;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+
+  /* Dark mode styles */
+  body.mdview-dark {
+    background: #0b1020;
+    color: #cbd5e1;
+  }
+
+  body.mdview-dark .markdown-body {
+    filter: invert(1) hue-rotate(180deg);
   }
 
   img {
@@ -29,15 +40,44 @@ $endif$
   pre {
     overflow: auto;
   }
+
+  /* Theme toggle button */
+  #theme-toggle-btn {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    padding: 6px 10px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    z-index: 9999;
+    user-select: none;
+  }
+
+  body.mdview-dark #theme-toggle-btn {
+    background: rgba(255, 255, 255, 0.6);
+    color: black;
+  }
 </style>
+
+<div id="theme-toggle-btn">🌓</div>
 <div class="markdown-body">
   $body$
 </div>
+
 <script>
   (function () {
     const ws = new WebSocket("ws://localhost:7071");
     let isScrollingFromEditor = false;
 
+    // Theme toggle function
+    function toggleTheme() {
+      document.body.classList.toggle("mdview-dark");
+    }
+
+    // Handle websocket messages
     ws.onmessage = (event) => {
       const msg = JSON.parse(event.data);
       if (msg.type === "scrollTo") {
@@ -45,20 +85,33 @@ $endif$
         window.scrollTo({top: msg.position});
         setTimeout(() => {isScrollingFromEditor = false;}, 50);
       } else if (msg.type === "toggleTheme") {
-        document.body.classList.toggle("mdview-dark");
+        toggleTheme();
       }
     };
 
+    // Send scroll position back to server
     window.addEventListener("scroll", () => {
       if (!isScrollingFromEditor) {
         ws.send(JSON.stringify({type: "scroll", position: window.scrollY}));
       }
     });
 
+    // Image zoom
     document.querySelectorAll("img").forEach(img => {
       img.addEventListener("click", () => {
         img.classList.toggle("zoomed");
       });
     });
+
+    // Keyboard shortcut "t" to toggle theme
+    window.addEventListener("keydown", (e) => {
+      if (e.key.toLowerCase() === "t") {
+        toggleTheme();
+      }
+    });
+
+    // Button click to toggle theme
+    document.getElementById("theme-toggle-btn").addEventListener("click", toggleTheme);
+
   })();
 </script>
