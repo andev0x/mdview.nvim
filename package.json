@@ -1,10 +1,31 @@
 {
-  "name": "mdview-server",
+  "name": "mdview.nvim",
   "version": "0.1.0",
+  "description": "A Neovim plugin for previewing markdown files in a browser.",
   "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "neovim",
+    "nvim",
+    "plugin",
+    "markdown",
+    "preview"
+  ],
+  "author": "andev0x",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/andev0x/mdview.nvim/issues"
+  },
+  "homepage": "https://github.com/andev0x/mdview.nvim#readme",
   "dependencies": {
+    "body-parser": "^1.20.2",
     "express": "^4.18.2",
-    "ws": "^8.13.0",
-    "body-parser": "^1.20.2"
+    "ws": "^8.13.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andev0x/mdview.nvim.git"
   }
 }

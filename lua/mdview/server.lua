@@ -25,11 +25,8 @@ function M.start(filepath, port)
 		return
 	end
 
-	local server_js = vim.fn.stdpath("config") .. "/path/to/mdview.nvim/server.js"
-	-- Adjust path: if plugin in dir, user may change; here we try to compute plugin path
-	-- Better: detect path relative to this file:
 	local script_dir = debug.getinfo(1, "S").source:sub(2):gsub("/lua/mdview/server.lua$", "")
-	server_js = script_dir .. "/server.js"
+	local server_js = script_dir .. "/server.js"
 
 	local cmd = { node, server_js, filepath, tostring(port) }
 

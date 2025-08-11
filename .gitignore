@@ -1,63 +1,16 @@
-# Ignore Lua build files
-/build/
-/dist/
-/vendor/
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
 
-# Ignore Neovim configuration files
-/.config/nvim/
-/init.lua
+# Editor
+.vscode/
+.idea/
 
-# Ignore Lua test files
-/test/
-*_test.lua
-
-# Ignore Lua documentation files
-/doc/
-
-# Ignore Neovim plugin files
-/plugin/
-
-# Ignore Lua IDE files
-/.idea/
-/.vscode/
-
-# Ignore Neovim logs
-/logs/
-
-# Ignore Neovim temp files
-/tmp/
-
-# Ignore Lua vendor files
-/vendor/
-
-# Ignore Lua mod files
-/go.mod
-/go.sum
-
-# Ignore Lua cache files
-/.cache/
-
-# Ignore Lua generated files
-/generated/
-
-# Ignore operating system files
+# OS
 .DS_Store
 Thumbs.db
 
-# Ignore editor files
-*.swp
-*.swo
-
-# Ignore Neovim plugin files
-/plugin/*
-!plugin/init.lua
-
-# Ignore Lua files in the plugin directory
-/plugin/*.lua
-
-# Ignore Neovim configuration files
-/.config/nvim/init.lua
-/.config/nvim/plugins.lua
-
-# Ignore Neovim plugin documentation files
-/plugin/doc/
+# Log
+*.log
+logs

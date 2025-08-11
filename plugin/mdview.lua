@@ -2,7 +2,7 @@ local M = {}
 local svc = require("mdview.server")
 local view = require("mdview.view")
 
-vim.api.nvim_create_user_command("MDView", function(opts)
+vim.api.nvim_create_user_command("MDView", function()
 	local file = vim.fn.expand("%:p")
 	if vim.fn.filereadable(file) == 0 then
 		print("No markdown file to preview")

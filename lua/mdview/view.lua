@@ -81,10 +81,10 @@ function M.open(port)
 				if vim.api.nvim_buf_get_name(buf) ~= vim.fn.expand("%:p") then
 					-- not markdown file currently editing
 					-- but here we want only when editing the markdown file
+					return
 				end
 				-- compute percent: use window view
 				local first_line = vim.fn.line("w0")
-				local last_line = vim.fn.line("w$")
 				local total_lines = vim.fn.line("$")
 				local percent = 0
 				if total_lines > 1 then
