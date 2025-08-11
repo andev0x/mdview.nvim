@@ -103,7 +103,7 @@ function M.open(port)
 			250,
 			vim.schedule_wrap(function()
 				local ev = svc.consume_browser_event()
-				if ev and ev.type == "scroll" then
+				if type(ev) == "table" and ev.type == "scroll" then
 					-- map browser percent to line and jump there
 					local total = vim.fn.line("$")
 					local target = math.max(1, math.floor(ev.percent * total))
