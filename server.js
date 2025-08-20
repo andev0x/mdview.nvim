@@ -17,6 +17,9 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// serve static files from the directory of the markdown file
+app.use(express.static(path.dirname(MARKDOWN_FILE)));
+
 // in-memory last event from browser
 let lastBrowserEvent = null;
 
