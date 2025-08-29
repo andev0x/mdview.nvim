@@ -34,6 +34,8 @@ function renderMarkdown() {
       "-o",
       "-" // output to stdout
     ];
+    // add resource path for resolving relative images
+    args.splice(1, 0, "--resource-path=" + path.dirname(MARKDOWN_FILE));
     // spawn pandoc and capture stdout
     const res = spawnSync("pandoc", args, { encoding: "utf8" });
     if (res.error) {
@@ -44,7 +46,39 @@ function renderMarkdown() {
       console.error("pandoc exit code:", res.status, res.stderr);
       return `<pre>Pandoc failed: ${res.stderr}</pre>`;
     }
-    return res.stdout;
+    let html = res.stdout || "";
+    // Post-process <img> tags to better support special characters and add attributes
+    const processed = html.replace(/<img\b([^>]*)>/gi, (match, attrs) => {
+      // find src attribute
+      const srcMatch = attrs.match(/\bsrc=("([^"]*)"|'([^']*)')/i);
+      let src = srcMatch ? (srcMatch[2] || srcMatch[3] || "") : "";
+      let newSrc = src;
+      if (src && !/^https?:/i.test(src) && !/^data:/i.test(src) && !/^blob:/i.test(src)) {
+        // URL-encode relative paths (preserve slashes)
+        newSrc = src.split('/').map((seg) => seg === '' ? '' : encodeURIComponent(decodeURIComponent(seg))).join('/');
+      }
+      let newAttrs = attrs;
+      if (srcMatch && newSrc !== src) {
+        newAttrs = newAttrs.replace(srcMatch[0], `src="${newSrc}"`);
+      }
+      // capture alt/title for data-* attributes and downstream tooling
+      const altMatch = newAttrs.match(/\balt=("([^"]*)"|'([^']*)')/i);
+      const titleMatch = newAttrs.match(/\btitle=("([^"]*)"|'([^']*)')/i);
+      const altText = altMatch ? (altMatch[2] || altMatch[3] || "") : "";
+      const titleText = titleMatch ? (titleMatch[2] || titleMatch[3] || "") : "";
+      const fileName = src ? path.basename(src) : "";
+      // ensure helpful attributes
+      if (!/\bloading=/.test(newAttrs)) newAttrs += ' loading="lazy"';
+      if (!/\bdecoding=/.test(newAttrs)) newAttrs += ' decoding="async"';
+      if (!/\breferrerpolicy=/.test(newAttrs)) newAttrs += ' referrerpolicy="no-referrer"';
+      if (!/\bclass=/.test(newAttrs)) newAttrs += ' class="mdview-img"';
+      if (src && !/\bdata-src-original=/.test(newAttrs)) newAttrs += ` data-src-original="${src.replace(/"/g, '&quot;')}"`;
+      if (fileName && !/\bdata-filename=/.test(newAttrs)) newAttrs += ` data-filename="${fileName.replace(/"/g, '&quot;')}"`;
+      if (altText && !/\bdata-alt=/.test(newAttrs)) newAttrs += ` data-alt="${altText.replace(/"/g, '&quot;')}"`;
+      if (titleText && !/\bdata-title=/.test(newAttrs)) newAttrs += ` data-title="${titleText.replace(/"/g, '&quot;')}"`;
+      return `<img${newAttrs.trim().startsWith(' ') ? '' : ' '}${newAttrs.trim()}>`;
+    });
+    return processed;
   } catch (e) {
     return `<pre>Render error: ${e.message}</pre>`;
   }
