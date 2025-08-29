@@ -31,17 +31,11 @@ function renderMarkdown() {
       MARKDOWN_FILE,
       "--template=" + templatePath,
       "-s",
-      "--mathjax", // Enable MathJax for mathematical expressions
-      "--standalone",
-      "--metadata", "title=MDView",
       "-o",
       "-" // output to stdout
     ];
-    // spawn pandoc and capture stdout with proper encoding
-    const res = spawnSync("pandoc", args, { 
-      encoding: "utf8",
-      maxBuffer: 1024 * 1024 * 10 // 10MB buffer for large files
-    });
+    // spawn pandoc and capture stdout
+    const res = spawnSync("pandoc", args, { encoding: "utf8" });
     if (res.error) {
       console.error("pandoc error:", res.error);
       return `<pre>Error running pandoc: ${res.error}</pre>`;
