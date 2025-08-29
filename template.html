@@ -11,8 +11,8 @@ $endif$
 <script>
   window.MathJax = {
     tex: {
-      inlineMath: [['$$', '$$'], ['\\(', '\\)']],
-      displayMath: [['$$$$', '$$$$'], ['\\[', '\\]']]
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
     },
     svg: {
       fontCache: 'global'
@@ -124,4 +124,51 @@ $endif$
   $body$
 </div>
 
-<!-- WebSocket and UI handlers are injected by client_ws.js -->
+<script>
+  (function () {
+    const ws = new WebSocket("ws://127.0.0.1:7070");
+    let isScrollingFromEditor = false;
+
+    // Theme toggle function
+    function toggleTheme() {
+      document.body.classList.toggle("mdview-dark");
+    }
+
+    // Handle websocket messages
+    ws.onmessage = (event) => {
+      const msg = JSON.parse(event.data);
+      if (msg.type === "scrollTo") {
+        isScrollingFromEditor = true;
+        window.scrollTo({top: msg.position});
+        setTimeout(() => {isScrollingFromEditor = false;}, 50);
+      } else if (msg.type === "toggleTheme") {
+        toggleTheme();
+      }
+    };
+
+    // Send scroll position back to server
+    window.addEventListener("scroll", () => {
+      if (!isScrollingFromEditor) {
+        ws.send(JSON.stringify({type: "scroll", position: window.scrollY}));
+      }
+    });
+
+    // Image zoom
+    document.querySelectorAll("img").forEach(img => {
+      img.addEventListener("click", () => {
+        img.classList.toggle("zoomed");
+      });
+    });
+
+    // Keyboard shortcut "t" to toggle theme
+    window.addEventListener("keydown", (e) => {
+      if (e.key.toLowerCase() === "t") {
+        toggleTheme();
+      }
+    });
+
+    // Button click to toggle theme
+    document.getElementById("theme-toggle-btn").addEventListener("click", toggleTheme);
+
+  })();
+</script>
