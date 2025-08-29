@@ -32,10 +32,27 @@
         const height = doc.scrollHeight - window.innerHeight;
         window.scrollTo(0, Math.round(height * percent));
       } else if (msg.type === "toggleTheme") {
-        document.documentElement.classList.toggle("mdview-dark");
+        document.body.classList.toggle("mdview-dark");
       }
     } catch (e) {
       console.error("bad msg", e);
+    }
+  });
+
+  // Keyboard shortcut "t" to toggle theme
+  window.addEventListener("keydown", (e) => {
+    if ((e.key || "").toLowerCase() === "t") {
+      document.body.classList.toggle("mdview-dark");
+    }
+  });
+
+  // Click handler for theme toggle button
+  window.addEventListener("DOMContentLoaded", () => {
+    const btn = document.getElementById("theme-toggle-btn");
+    if (btn) {
+      btn.addEventListener("click", () => {
+        document.body.classList.toggle("mdview-dark");
+      });
     }
   });
 

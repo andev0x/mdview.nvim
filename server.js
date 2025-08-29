@@ -29,11 +29,14 @@ function renderMarkdown() {
     const templatePath = path.join(__dirname, "template.html");
     const args = [
       MARKDOWN_FILE,
+      "--from=gfm+tex_math_dollars+tex_math_single_backslash+pipe_tables+table_captions+task_lists+smart+emoji",
+      "--to=html5",
       "--template=" + templatePath,
       "-s",
       "--mathjax", // Enable MathJax for mathematical expressions
       "--standalone",
       "--metadata", "title=MDView",
+      "--resource-path=" + path.dirname(MARKDOWN_FILE),
       "-o",
       "-" // output to stdout
     ];
