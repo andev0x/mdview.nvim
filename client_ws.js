@@ -39,10 +39,13 @@
     }
   });
 
-  // add simple image zoom UI
+  // Enhanced image zoom UI with better error handling
   document.addEventListener("click", (e) => {
     const t = e.target;
     if (t && t.tagName === "IMG") {
+      e.preventDefault();
+      e.stopPropagation();
+      
       const overlayId = "mdview-img-overlay";
       let overlay = document.getElementById(overlayId);
       if (!overlay) {
@@ -56,16 +59,44 @@
         overlay.style.display = "flex";
         overlay.style.alignItems = "center";
         overlay.style.justifyContent = "center";
-        overlay.style.background = "rgba(0,0,0,0.8)";
+        overlay.style.background = "rgba(0,0,0,0.9)";
         overlay.style.zIndex = 99999;
+        overlay.style.cursor = "zoom-out";
+        
+        // Close on overlay click or ESC key
         overlay.addEventListener("click", () => {
           overlay.remove();
         });
+        
+        document.addEventListener("keydown", function escHandler(e) {
+          if (e.key === "Escape") {
+            overlay.remove();
+            document.removeEventListener("keydown", escHandler);
+          }
+        });
+        
         document.body.appendChild(overlay);
       }
+      
       const clone = t.cloneNode();
-      clone.style.maxHeight = "90%";
-      clone.style.maxWidth = "90%";
+      clone.style.maxHeight = "90vh";
+      clone.style.maxWidth = "90vw";
+      clone.style.objectFit = "contain";
+      clone.style.borderRadius = "8px";
+      clone.style.boxShadow = "0 4px 20px rgba(0,0,0,0.5)";
+      
+      // Add error handling for broken images
+      clone.addEventListener("error", () => {
+        clone.style.display = "none";
+        const errorDiv = document.createElement("div");
+        errorDiv.style.color = "white";
+        errorDiv.style.fontSize = "18px";
+        errorDiv.style.textAlign = "center";
+        errorDiv.innerHTML = "❌ Image failed to load<br><small>Click to close</small>";
+        overlay.innerHTML = "";
+        overlay.appendChild(errorDiv);
+      });
+      
       overlay.innerHTML = "";
       overlay.appendChild(clone);
     }
